@@ -4,237 +4,70 @@
   Hello, World! example for mxGraph. This example demonstrates using
   a DOM node to create a graph and adding vertices and edges.
 -->
-<!DOCTYPE html>
 <html>
-  <head>
-    <title>Hello, World! example for mxGraph</title>
+<head>
+	<title>Hello, World! example for mxGraph</title>
 
-    <!-- Sets the basepath for the library if not in same directory -->
-    <script type="text/javascript">
-      mxBasePath = "../src";
-    </script>
+	<!-- Sets the basepath for the library if not in same directory -->
+	<script type="text/javascript">
+		mxBasePath = '../src';
+	</script>
 
-    <!-- Loads and initializes the library -->
-    <script type="text/javascript" src="../src/js/mxClient.js"></script>
-    <link
-      rel="stylesheet"
-      href="../src/css/common.css"
-      charset="UTF-8"
-      type="text/css"
-    />
-    <script src="../src/js/util/mxLog.js"></script>
-    <script src="../src/js/util/mxObjectIdentity.js"></script>
-    <script src="../src/js/util/mxDictionary.js"></script>
-    <script src="../src/js/util/mxResources.js"></script>
-    <script src="../src/js/util/mxPoint.js"></script>
-    <script src="../src/js/util/mxRectangle.js"></script>
-    <script src="../src/js/util/mxEffects.js"></script>
-    <script src="../src/js/util/mxUtils.js"></script>
-    <script src="../src/js/util/mxConstants.js"></script>
-    <script src="../src/js/util/mxEventObject.js"></script>
-    <script src="../src/js/util/mxMouseEvent.js"></script>
-    <script src="../src/js/util/mxEventSource.js"></script>
-    <script src="../src/js/util/mxEvent.js"></script>
-    <script src="../src/js/util/mxXmlRequest.js"></script>
-    <script src="../src/js/util/mxClipboard.js"></script>
-    <script src="../src/js/util/mxWindow.js"></script>
-    <script src="../src/js/util/mxForm.js"></script>
-    <script src="../src/js/util/mxImage.js"></script>
-    <script src="../src/js/util/mxDivResizer.js"></script>
-    <script src="../src/js/util/mxDragSource.js"></script>
-    <script src="../src/js/util/mxToolbar.js"></script>
-    <script src="../src/js/util/mxUndoableEdit.js"></script>
-    <script src="../src/js/util/mxUndoManager.js"></script>
-    <script src="../src/js/util/mxUrlConverter.js"></script>
-    <script src="../src/js/util/mxPanningManager.js"></script>
-    <script src="../src/js/util/mxPopupMenu.js"></script>
-    <script src="../src/js/util/mxAutoSaveManager.js"></script>
-    <script src="../src/js/util/mxAnimation.js"></script>
-    <script src="../src/js/util/mxMorphing.js"></script>
-    <script src="../src/js/util/mxImageBundle.js"></script>
-    <script src="../src/js/util/mxImageExport.js"></script>
-    <script src="../src/js/util/mxAbstractCanvas2D.js"></script>
-    <script src="../src/js/util/mxXmlCanvas2D.js"></script>
-    <script src="../src/js/util/mxSvgCanvas2D.js"></script>
-    <script src="../src/js/util/mxVmlCanvas2D.js"></script>
-    <script src="../src/js/util/mxGuide.js"></script>
-    <script src="../src/js/shape/mxShape.js"></script>
-    <script src="../src/js/shape/mxStencil.js"></script>
-    <script src="../src/js/shape/mxStencilRegistry.js"></script>
-    <script src="../src/js/shape/mxMarker.js"></script>
-    <script src="../src/js/shape/mxActor.js"></script>
-    <script src="../src/js/shape/mxCloud.js"></script>
-    <script src="../src/js/shape/mxRectangleShape.js"></script>
-    <script src="../src/js/shape/mxEllipse.js"></script>
-    <script src="../src/js/shape/mxDoubleEllipse.js"></script>
-    <script src="../src/js/shape/mxRhombus.js"></script>
-    <script src="../src/js/shape/mxPolyline.js"></script>
-    <script src="../src/js/shape/mxArrow.js"></script>
-    <script src="../src/js/shape/mxArrowConnector.js"></script>
-    <script src="../src/js/shape/mxText.js"></script>
-    <script src="../src/js/shape/mxTriangle.js"></script>
-    <script src="../src/js/shape/mxHexagon.js"></script>
-    <script src="../src/js/shape/mxLine.js"></script>
-    <script src="../src/js/shape/mxImageShape.js"></script>
-    <script src="../src/js/shape/mxLabel.js"></script>
-    <script src="../src/js/shape/mxCylinder.js"></script>
-    <script src="../src/js/shape/mxConnector.js"></script>
-    <script src="../src/js/shape/mxSwimlane.js"></script>
-    <script src="../src/js/layout/mxGraphLayout.js"></script>
-    <script src="../src/js/layout/mxStackLayout.js"></script>
-    <script src="../src/js/layout/mxPartitionLayout.js"></script>
-    <script src="../src/js/layout/mxCompactTreeLayout.js"></script>
-    <script src="../src/js/layout/mxRadialTreeLayout.js"></script>
-    <script src="../src/js/layout/mxFastOrganicLayout.js"></script>
-    <script src="../src/js/layout/mxCircleLayout.js"></script>
-    <script src="../src/js/layout/mxParallelEdgeLayout.js"></script>
-    <script src="../src/js/layout/mxCompositeLayout.js"></script>
-    <script src="../src/js/layout/mxEdgeLabelLayout.js"></script>
-    <script src="../src/js/layout/hierarchical/model/mxGraphAbstractHierarchyCell.js"></script>
-    <script src="../src/js/layout/hierarchical/model/mxGraphHierarchyNode.js"></script>
-    <script src="../src/js/layout/hierarchical/model/mxGraphHierarchyEdge.js"></script>
-    <script src="../src/js/layout/hierarchical/model/mxGraphHierarchyModel.js"></script>
-    <script src="../src/js/layout/hierarchical/model/mxSwimlaneModel.js"></script>
-    <script src="../src/js/layout/hierarchical/stage/mxHierarchicalLayoutStage.js"></script>
-    <script src="../src/js/layout/hierarchical/stage/mxMedianHybridCrossingReduction.js"></script>
-    <script src="../src/js/layout/hierarchical/stage/mxMinimumCycleRemover.js"></script>
-    <script src="../src/js/layout/hierarchical/stage/mxCoordinateAssignment.js"></script>
-    <script src="../src/js/layout/hierarchical/stage/mxSwimlaneOrdering.js"></script>
-    <script src="../src/js/layout/hierarchical/mxHierarchicalLayout.js"></script>
-    <script src="../src/js/layout/hierarchical/mxSwimlaneLayout.js"></script>
-    <script src="../src/js/model/mxGraphModel.js"></script>
-    <script src="../src/js/model/mxCell.js"></script>
-    <script src="../src/js/model/mxGeometry.js"></script>
-    <script src="../src/js/model/mxCellPath.js"></script>
-    <script src="../src/js/view/mxPerimeter.js"></script>
-    <script src="../src/js/view/mxPrintPreview.js"></script>
-    <script src="../src/js/view/mxStylesheet.js"></script>
-    <script src="../src/js/view/mxCellState.js"></script>
-    <script src="../src/js/view/mxGraphSelectionModel.js"></script>
-    <script src="../src/js/view/mxCellEditor.js"></script>
-    <script src="../src/js/view/mxCellRenderer.js"></script>
-    <script src="../src/js/view/mxEdgeStyle.js"></script>
-    <script src="../src/js/view/mxStyleRegistry.js"></script>
-    <script src="../src/js/view/mxGraphView.js"></script>
-    <script src="../src/js/view/mxGraph.js"></script>
-    <script src="../src/js/view/mxCellOverlay.js"></script>
-    <script src="../src/js/view/mxOutline.js"></script>
-    <script src="../src/js/view/mxMultiplicity.js"></script>
-    <script src="../src/js/view/mxLayoutManager.js"></script>
-    <script src="../src/js/view/mxSwimlaneManager.js"></script>
-    <script src="../src/js/view/mxTemporaryCellStates.js"></script>
-    <script src="../src/js/view/mxCellStatePreview.js"></script>
-    <script src="../src/js/view/mxConnectionConstraint.js"></script>
-    <script src="../src/js/handler/mxGraphHandler.js"></script>
-    <script src="../src/js/handler/mxPanningHandler.js"></script>
-    <script src="../src/js/handler/mxPopupMenuHandler.js"></script>
-    <script src="../src/js/handler/mxCellMarker.js"></script>
-    <script src="../src/js/handler/mxSelectionCellsHandler.js"></script>
-    <script src="../src/js/handler/mxConnectionHandler.js"></script>
-    <script src="../src/js/handler/mxConstraintHandler.js"></script>
-    <script src="../src/js/handler/mxRubberband.js"></script>
-    <script src="../src/js/handler/mxHandle.js"></script>
-    <script src="../src/js/handler/mxVertexHandler.js"></script>
-    <script src="../src/js/handler/mxEdgeHandler.js"></script>
-    <script src="../src/js/handler/mxElbowEdgeHandler.js"></script>
-    <script src="../src/js/handler/mxEdgeSegmentHandler.js"></script>
-    <script src="../src/js/handler/mxKeyHandler.js"></script>
-    <script src="../src/js/handler/mxTooltipHandler.js"></script>
-    <script src="../src/js/handler/mxCellTracker.js"></script>
-    <script src="../src/js/handler/mxCellHighlight.js"></script>
-    <script src="../src/js/editor/mxDefaultKeyHandler.js"></script>
-    <script src="../src/js/editor/mxDefaultPopupMenu.js"></script>
-    <script src="../src/js/editor/mxDefaultToolbar.js"></script>
-    <script src="../src/js/editor/mxEditor.js"></script>
-    <script src="../src/js/io/mxCodecRegistry.js"></script>
-    <script src="../src/js/io/mxCodec.js"></script>
-    <script src="../src/js/io/mxObjectCodec.js"></script>
-    <script src="../src/js/io/mxCellCodec.js"></script>
-    <script src="../src/js/io/mxModelCodec.js"></script>
-    <script src="../src/js/io/mxRootChangeCodec.js"></script>
-    <script src="../src/js/io/mxChildChangeCodec.js"></script>
-    <script src="../src/js/io/mxTerminalChangeCodec.js"></script>
-    <script src="../src/js/io/mxGenericChangeCodec.js"></script>
-    <script src="../src/js/io/mxGraphCodec.js"></script>
-    <script src="../src/js/io/mxGraphViewCodec.js"></script>
-    <script src="../src/js/io/mxStylesheetCodec.js"></script>
-    <script src="../src/js/io/mxDefaultKeyHandlerCodec.js"></script>
-    <script src="../src/js/io/mxDefaultToolbarCodec.js"></script>
-    <script src="../src/js/io/mxDefaultPopupMenuCodec.js"></script>
-    <script src="../src/js/io/mxEditorCodec.js"></script>
+	<!-- Loads and initializes the library -->
+	<script type="text/javascript" src="../src/js/mxClient.js"></script>
 
-    <!-- Example code -->
-    <script type="text/javascript">
-      // Program starts here. Creates a sample graph in the
-      // DOM node with the specified ID. This function is invoked
-      // from the onLoad event handler of the document (see below).
-      function main(container) {
-        // Checks if the browser is supported
-        if (!mxClient.isBrowserSupported()) {
-          // Displays an error message if the browser is not supported.
-          mxUtils.error("Browser is not supported!", 200, false);
-        } else {
-          // Disables the built-in context menu
-          mxEvent.disableContextMenu(container);
+	<!-- Example code -->
+	<script type="text/javascript">
+		// Program starts here. Creates a sample graph in the
+		// DOM node with the specified ID. This function is invoked
+		// from the onLoad event handler of the document (see below).
+		function main(container)
+		{
+			// Checks if the browser is supported
+			if (!mxClient.isBrowserSupported())
+			{
+				// Displays an error message if the browser is not supported.
+				mxUtils.error('Browser is not supported!', 200, false);
+			}
+			else
+			{
+				// Disables the built-in context menu
+				mxEvent.disableContextMenu(container);
+				
+				// Creates the graph inside the given container
+				var graph = new mxGraph(container);
 
-          // Creates the graph inside the given container
-          var graph = new mxGraph(container);
+				// Enables rubberband selection
+				new mxRubberband(graph);
+				
+				// Gets the default parent for inserting new cells. This
+				// is normally the first child of the root (ie. layer 0).
+				var parent = graph.getDefaultParent();
+								
+				// Adds cells to the model in a single step
+				graph.getModel().beginUpdate();
+				try
+				{
+					var v1 = graph.insertVertex(parent, null, 'Hello,', 20, 20, 80, 30);
+					var v2 = graph.insertVertex(parent, null, 'World!', 200, 150, 80, 30);
+					var e1 = graph.insertEdge(parent, null, '', v1, v2);
+				}
+				finally
+				{
+					// Updates the display
+					graph.getModel().endUpdate();
+				}
+			}
+		};
+	</script>
+</head>
 
-          // Enables rubberband selection
-          new mxRubberband(graph);
+<!-- Page passes the container for the graph to the program -->
+<body onload="main(document.getElementById('graphContainer'))">
 
-          // Gets the default parent for inserting new cells. This
-          // is normally the first child of the root (ie. layer 0).
-          var parent = graph.getDefaultParent();
-
-          // Adds cells to the model in a single step
-          graph.getModel().beginUpdate();
-          try {
-            var v1 = graph.insertVertex(parent, null, "Hello,", 20, 20, 80, 30);
-            var v2 = graph.insertVertex(
-              parent,
-              null,
-              "World!",
-              200,
-              150,
-              80,
-              30
-            );
-            var e1 = graph.insertEdge(parent, null, "", v1, v2);
-          } finally {
-            // Updates the display
-            graph.getModel().endUpdate();
-          }
-        }
-      }
-    </script>
-    <style type="text/css">
-      @font-face {
-        font-family: TencentSans;
-        src: url("moz-extension://bd764a17-4932-4320-b8a8-2c9c4083514b/static/fonts/TencentSans.woff2");
-      }
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      }
-    </style>
-  </head>
-
-  <!-- Page passes the container for the graph to the program -->
-  <body onload="main(document.getElementById('graphContainer'))">
-    <!-- Creates a container for the graph with a grid wallpaper -->
-    <div
-      id="graphContainer"
-      style="
-        position: relative;
-        overflow: hidden;
-        width: 80%;
-        height: 80%;
-        background: url('editors/images/grid.gif');
-        cursor: default;
-      "
-    ></div>
-  </body>
+	<!-- Creates a container for the graph with a grid wallpaper -->
+	<div id="graphContainer"
+		style="position:relative;overflow:hidden;width:321px;height:241px;background:url('editors/images/grid.gif');cursor:default;">
+	</div>
+</body>
 </html>
