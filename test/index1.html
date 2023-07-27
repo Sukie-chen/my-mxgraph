@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <title>index1</title>
+    <script type="text/javascript">
+      class CreateImage {
+        #src = null;
+        #width = null;
+        #height = null;
+        constructor(src, width, height) {
+          this.#src = src;
+          this.#width = width;
+          this.#height = height;
+        }
+      }
+      class ToolBar {
+        #container = null;
+        #enabled = true;
+        constructor(containerDom) {
+          this.#container = containerDom;
+        }
+        setEnabled(isAble) {
+          this.#enabled = isAble;
+        }
+        addItem(title, icon, funct, pressedIcon, style, factoryMethod) {
+          const img = document.createElement(icon != null ? "img" : "button");
+          const initialClassName =
+            style ||
+            (factoryMethod != null ? "mxToolbarMode" : "mxToolbarItem");
+          img.className = initialClassName;
+          img.setAttribute("src", icon);
+
+          if (title != null) {
+            if (icon != null) {
+              img.setAttribute("title", title);
+            } else {
+              mxUtils.write(img, title);
+            }
+          }
+          this.#container.appendChild(img);
+        }
+      }
+      function createTBContainer() {
+        const tbContainer = document.createElement("div");
+        tbContainer.style.position = "absolute";
+        tbContainer.style.overflow = "hidden";
+        tbContainer.style.padding = "2px";
+        tbContainer.style.left = "0px";
+        tbContainer.style.top = "26px";
+        tbContainer.style.width = "24px";
+        tbContainer.style.bottom = "0px";
+        document.body.appendChild(tbContainer);
+      }
+      function createGrid(config) {
+        const container = document.createElement("div");
+        container.style.position = "absolute";
+        container.style.overflow = "hidden";
+        config.left && (container.style.left = config.left + "px");
+        config.right && (container.style.right = config.right + "px");
+        config.top && (container.style.top = config.top + "px");
+        config.bottom && (container.style.bottom = config.bottom + "px");
+        config.background &&
+          (container.style.background = config.background + "px");
+        document.body.appendChild(container);
+      }
+      function main() {
+        createGrid({
+          left: 24,
+          top: 0,
+          right: 0,
+          bottom: 0,
+          background: 'url("editors/images/grid.gif")',
+        });
+        const connectImage = new createImage("images/connector.gif", 16, 16);
+
+        const toolbar = new ToolBar(tbContainer);
+        toolbar.setEnabled(false);
+
+        // Creates the model and the graph inside the container
+        // using the fastest rendering available on the browser
+        var model = new mxGraphModel();
+        var graph = new mxGraph(container, model);
+        graph.dropEnabled = true;
+
+        // Matches DnD inside the graph
+        mxDragSource.prototype.getDropTarget = function (graph, x, y) {
+          var cell = graph.getCellAt(x, y);
+
+          if (!graph.isValidDropTarget(cell)) {
+            cell = null;
+          }
+
+          return cell;
+        };
+
+        // Enables new connections in the graph
+        graph.setConnectable(true);
+        graph.setMultigraph(false);
+
+        // Stops editing on enter or escape keypress
+        var keyHandler = new mxKeyHandler(graph);
+        var rubberband = new mxRubberband(graph);
+
+        var addVertex = function (icon, w, h, style) {
+          var vertex = new mxCell(null, new mxGeometry(0, 0, w, h), style);
+          vertex.setVertex(true);
+
+          addToolbarItem(graph, toolbar, vertex, icon);
+        };
+
+        addVertex(
+          "editors/images/swimlane.gif",
+          120,
+          160,
+          "shape=swimlane;startSize=20;"
+        );
+        addVertex("editors/images/rectangle.gif", 100, 40, "");
+        addVertex("editors/images/rounded.gif", 100, 40, "shape=rounded");
+        addVertex("editors/images/ellipse.gif", 40, 40, "shape=ellipse");
+        addVertex("editors/images/rhombus.gif", 40, 40, "shape=rhombus");
+        addVertex("editors/images/triangle.gif", 40, 40, "shape=triangle");
+        addVertex("editors/images/cylinder.gif", 40, 40, "shape=cylinder");
+        addVertex("editors/images/actor.gif", 30, 40, "shape=actor");
+        toolbar.addLine();
+
+        var button = mxUtils.button(
+          "Create toolbar entry from selection",
+          function (evt) {
+            if (!graph.isSelectionEmpty()) {
+              // Creates a copy of the selection array to preserve its state
+              var cells = graph.getSelectionCells();
+              var bounds = graph.getView().getBounds(cells);
+
+              // Function that is executed when the image is dropped on
+              // the graph. The cell argument points to the cell under
+              // the mousepointer if there is one.
+              var funct = function (graph, evt, cell) {
+                graph.stopEditing(false);
+
+                var pt = graph.getPointForEvent(evt);
+                var dx = pt.x - bounds.x;
+                var dy = pt.y - bounds.y;
+
+                graph.setSelectionCells(graph.importCells(cells, dx, dy, cell));
+              };
+
+              // Creates the image which is used as the drag icon (preview)
+              var img = toolbar.addMode(
+                null,
+                "editors/images/outline.gif",
+                funct
+              );
+              mxUtils.makeDraggable(img, graph, funct);
+            }
+          }
+        );
+
+        button.style.position = "absolute";
+        button.style.left = "2px";
+        button.style.top = "2px";
+
+        document.body.appendChild(button);
+      }
+
+      function addToolbarItem(graph, toolbar, prototype, image) {
+        var funct = function (graph, evt, cell) {
+          graph.stopEditing(false);
+
+          var pt = graph.getPointForEvent(evt);
+          var vertex = graph.getModel().cloneCell(prototype);
+          vertex.geometry.x = pt.x;
+          vertex.geometry.y = pt.y;
+
+          graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
+        };
+
+        var img = toolbar.addMode(null, image, funct);
+        mxUtils.makeDraggable(img, graph, funct);
+      }
+    </script>
+  </head>
+
+  <body onload="main();"></body>
+</html>

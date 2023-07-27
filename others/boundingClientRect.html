@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      img {
+        background-color: blueviolet;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="./imags/bear-500x500.png" alt="" width="500" height="500" />
+    <img src="./imags/castle1-500x500.png" alt="" width="500" height="500" />
+    <img src="./imags/doodle_6-500x500.png" alt="" width="500" height="500" />
+    <img
+      data-src="./imags/doodle_7-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      data-src="./imags/ehefueralle-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      data-src="./imags/guitar-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      data-src="./imags/frauzufall-a1-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      data-src="./imags/island-a1-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      data-src="./imags/owlynight-a1-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      data-src="./imags/roadtrip-a1-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+  </body>
+  <script text="javascript">
+    const imgs = document.querySelectorAll("img");
+
+    //用来判断bound.top<=clientHeight的函数，返回一个bool值
+    function isIn(el) {
+      const bound = el.getBoundingClientRect();
+      const clientHeight = window.innerHeight;
+      return bound.top <= clientHeight;
+    }
+    //检查图片是否在可视区内，如果不在，则加载
+    function check() {
+      Array.from(imgs).forEach(function (el) {
+        if (isIn(el)) {
+          loadImg(el);
+        }
+      });
+    }
+    function loadImg(el) {
+      if (!el.src) {
+        const source = el.dataset.src;
+        el.src = source;
+      }
+    }
+    window.onload = window.onscroll = function () {
+      //onscroll()在滚动条滚动的时候触发
+      check();
+    };
+  </script>
+</html>

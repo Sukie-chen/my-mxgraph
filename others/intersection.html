@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>intersection observer</title>
+    <style>
+      img {
+        background-color: blueviolet;
+        margin-top: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <img
+      class="lazy"
+      data-srcset="./imags/bear-500x500.png"
+      data-src="./imags/bear-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-srcset="./imags/castle1-500x500.png"
+      data-src="./imags/castle1-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-srcset="./imags/doodle_6-500x500.png"
+      data-src="./imags/doodle_6-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-srcset="./imags/doodle_7-500x500.png"
+      data-src="./imags/doodle_7-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-src="./imags/ehefueralle-500x500.png"
+      alt=""
+      data-srcset="./imags/ehefueralle-500x500.png"
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-src="./imags/guitar-500x500.png"
+      data-srcset="./imags/ehefueralle-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-src="./imags/frauzufall-a1-500x500.png"
+      data-srcset="./imags/ehefueralle-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-src="./imags/island-a1-500x500.png"
+      data-srcset="./imags/ehefueralle-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-src="./imags/owlynight-a1-500x500.png"
+      data-srcset="./imags/ehefueralle-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+    <img
+      class="lazy"
+      data-src="./imags/roadtrip-a1-500x500.png"
+      data-srcset="./imags/ehefueralle-500x500.png"
+      alt=""
+      width="500"
+      height="500"
+    />
+  </body>
+  <script text="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+      const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+      if (
+        "IntersectionObserver" in window &&
+        "IntersectionObserverEntry" in window &&
+        "intersectionRatio" in window.IntersectionObserverEntry.prototype
+      ) {
+        let lazyImageObserver = new IntersectionObserver(function (
+          entries,
+          observer
+        ) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              let lazyImage = entry.target;
+              lazyImage.src = lazyImage.dataset.src;
+              lazyImage.srcset = lazyImage.dataset.srcset;
+              lazyImage.classList.remove("lazy");
+              lazyImageObserver.unobserve(lazyImage);
+            }
+          });
+        });
+
+        lazyImages.forEach(function (lazyImage) {
+          lazyImageObserver.observe(lazyImage);
+        });
+      }
+    });
+  </script>
+</html>

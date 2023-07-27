@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>long</title>
+    <style>
+      #scroll {
+        width: 400px;
+        height: 600px;
+        background-color: aqua;
+        overflow-y: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="scroll"></div>
+  </body>
+  <script text="javascript">
+    // 找到第一个累加高度大于指定高度的序号
+    function findOverIndex(items, offset) {
+      let currentHeight = 0;
+      for (let i = 0; i < items.length; i++) {
+        const { height } = items[i];
+        currentHeight += height;
+        if (currentHeight > offset) {
+          return i;
+        }
+      }
+      return items.length - 1;
+    }
+    // 获取列表中某一段的累加高度
+    function getPartHeight(list, start = 0, end = list.length) {
+      let height = 0;
+      for (let i = start; i < end; i++) {
+        height += list[i].height;
+      }
+      return height;
+    }
+    function createEleFun(item) {
+      const el = document.createElement("div");
+      el.style.width = "100px";
+      el.style.height = item.height;
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      el.style.background = `ragb(${r},${g},${b})`;
+      const imgEl = document.createElement("img");
+      imgEl.src = item.item;
+      imgEl.alt = ""; //"./imags/1(1).png
+      imgEl.width = "100";
+      imgEl.height = item.height;
+      // el.innerHTML = item.item;
+      el.appendChild(imgEl);
+      return el;
+    }
+    function isInRange(num, min, max) {
+      return num >= min && num <= max;
+    }
+    // 判断是否有缓存
+    function withinCache(currentHead, currentTail, cacheList) {
+      if (!cacheList) return false;
+      if (!cacheList.length) return false;
+      const head = cacheList[0]; // items数据结构
+      const tail = cacheList[cacheList.length - 1];
+      return (
+        isInRange(currentHead, head.index, tail.index) &&
+        isInRange(currentTail, head.index, tail.index)
+      );
+    }
+    // 事件节流
+    window.superTimeDebanceFun = {};
+    function throttleScroll(name, fn, delay) {
+      if (window.superTimeDebanceFun[name]) {
+        clearTimeout(window.superTimeDebanceFun[name]);
+        delete window.superTimeDebanceFun[name];
+      }
+      window.superTimeDebanceFun[name] = setTimeout(() => {
+        fn();
+      }, delay);
+      // let timer = null;
+      // return function () {
+      //   const _this = this;
+      //   if (!timer) {
+      //     fn.apply(_this, arguments);
+      //     timer = setTimeout(function () {
+      //       timer = null;
+      //     }, delay);
+      //   }
+      // };
+    }
+    class VirtualScroll {
+      constructor(el, list, itemElementGenerator, itemHeight) {
+        this.initElement(el, list, itemElementGenerator, itemHeight);
+        this.mapList();
+        this.setScrollEvent();
+        this.setScrollOffset(0);
+        this.cacheCount = 2;
+        this.cacheList = [];
+      }
+      initElement(el, list, itemElementGenerator, itemHeight) {
+        this.visiable = el; // 视口元素
+        this.list = list; // 需要展示的列表数据
+        this.itemHeight = itemHeight; // 每个列表元素的高度
+        this.itemElementGenerator = itemElementGenerator; // 列表元素的DOM生成器
+        this.visiHeight = this.visiable?.clientHeight;
+        this.visiable.style.overflow = "hidden";
+      }
+      mapList() {
+        this.items = this.list?.map((item, i) => ({
+          height: this.itemHeight,
+          index: i,
+          item: item,
+        }));
+        // 全部数据长列表的总高度
+        this.contentHeight = getPartHeight(this.items);
+      }
+      setScrollEvent() {
+        let y = 0;
+        // 总滚动量
+        const scrollEnd = this.contentHeight - this.visiHeight;
+        const updateOffset = (e) => {
+          throttleScroll("update", changeY, 200);
+        };
+        const changeY = () => {
+          this.setScrollOffset(y);
+        };
+        const conputedY = (e) => {
+          if (!e.preventDefault) {
+            return;
+          }
+          e.preventDefault();
+          y += e.deltaY; //向下为正，向上为负。
+          // 固定 y 值范围 0~scrollSpace
+          y = Math.max(y, 0);
+          y = Math.min(y, scrollEnd);
+        };
+        this.visiable.addEventListener("wheel", conputedY);
+        this.visiable.addEventListener("wheel", updateOffset);
+      }
+      setScrollOffset(num) {
+        this.scrollOffset = num;
+        this.render(num);
+      }
+
+      // 渲染列表 主要依赖于用户的总滚动量scrollOffset，每一次滚动都对应着一个固定的渲染帧
+      render(scrollOffset) {
+        // 1. 获取每次滚动时视区的items数据列表
+        const currentHead = findOverIndex(this.items, scrollOffset);
+        const currentTail = findOverIndex(
+          this.items,
+          scrollOffset + this.visiHeight
+        );
+        let renderOffset;
+        // 当前滚动距离仍在缓存内
+        if (withinCache(currentHead, currentTail, this.cacheList)) {
+          const cacheHead = this.cacheList[0].index;
+          const renderOffset =
+            scrollOffset - getPartHeight(this.items, 0, cacheHead);
+          this.inner.style.transform = `【(-${renderOffset}px)`;
+          return;
+        }
+        this.setCacheList(currentHead, currentTail);
+        renderOffset = scrollOffset - getPartHeight(this.items, 0, currentHead);
+        // 将需要渲染的数据列表渲染至视区
+        this.renderCacheDom(renderOffset);
+      }
+      setCacheList(currentHead, currentTail) {
+        // 无缓存，新增前后各10个至缓存
+        const headToCache = Math.max(
+          Number(currentHead) - (this.cacheCount || 2),
+          0
+        );
+        const tailToCache = Math.min(
+          Number(currentTail) + (this.cacheCount || 2),
+          this.items.length
+        );
+        this.cacheList = this.items.slice(headToCache, tailToCache);
+      }
+      renderCacheDom(renderOffset) {
+        this.inner = document.createElement("div");
+        this.cacheList.forEach((item) => {
+          const el = this.itemElementGenerator(item);
+          this.inner.appendChild(el);
+        });
+        this.inner.style.transform = `translateY(-${renderOffset}px)`;
+        this.visiable.innerHTML = "";
+        this.visiable.appendChild(this.inner);
+      }
+    }
+
+    const data = [];
+    for (let index = 0; index < 500; index++) {
+      const imgsrc = `./imags/1 (${Math.floor(Math.random() * 19) + 1}).png`;
+      // const innerHtml = `<img src="${imgsrc}" alt="./imags/1(1).png" width="100" height="100"/>`;
+      const innerHtml = imgsrc;
+      data.push(innerHtml);
+    }
+    const visiDom = document.getElementById("scroll");
+    setTimeout(() => {
+      new VirtualScroll(visiDom, data, createEleFun, 100);
+    }, 3000);
+  </script>
+</html>
